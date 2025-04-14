@@ -1,10 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useCallback } from 'react';
+import { useAnimations } from '../../hooks/useAnimations';
+import ErrorBoundary from '../ErrorBoundary/ErrorBoundary';
 import './ExpandedView.css';
 
 const ExpandedView = ({ isOpen, onClose, profileData }) => {
   const expandedRef = useRef(null);
+  const { containerVariants, itemVariants, overlayVariants } = useAnimations();
 
   // Handle click outside to close
   const handleClickOutside = useCallback((event) => {
@@ -20,136 +22,112 @@ const ExpandedView = ({ isOpen, onClose, profileData }) => {
     };
   }, [handleClickOutside]);
 
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        staggerChildren: 0.1
-      }
-    },
-    exit: {
-      opacity: 0,
-      transition: {
-        duration: 0.3
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5
-      }
-    }
-  };
-
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          className="expanded-overlay"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
+    <ErrorBoundary>
+      <AnimatePresence>
+        {isOpen && (
           <motion.div
-            ref={expandedRef}
-            className="expanded-content"
-            variants={containerVariants}
+            className="expanded-overlay"
+            variants={overlayVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
+            onClick={onClose}
           >
-            <motion.button
-              className="close-button"
-              onClick={onClose}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              ×
-            </motion.button>
-
-            <motion.div className="expanded-image-container" variants={itemVariants}>
-              <img
-                src={profileData.image}
-                alt={profileData.name}
-                className="expanded-image"
-              />
-            </motion.div>
-
-            <motion.h1
-              className="expanded-name"
-              variants={itemVariants}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              {profileData.name}
-            </motion.h1>
-
-            <motion.p
-              className="expanded-title"
-              variants={itemVariants}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              {profileData.title}
-            </motion.p>
-
-            <motion.p
-              className="expanded-bio"
-              variants={itemVariants}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
-              {profileData.bio}
-            </motion.p>
-
             <motion.div
-              className="social-links"
-              variants={itemVariants}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
+              ref={expandedRef}
+              className="expanded-content"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              onClick={e => e.stopPropagation()}
             >
-              {profileData.socialLinks.map((link, index) => (
+              <motion.button
+                className="close-button"
+                onClick={onClose}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                ×
+              </motion.button>
+
+              {/* Profile Section */}
+              <motion.div variants={itemVariants} className="profile-section">
+                <motion.div 
+                  className="expanded-image-container"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <img 
+                    src={profileData.image} 
+                    alt={profileData.name}
+                    className="profile-image"
+                  />
+                </motion.div>
+                <h2>{profileData.name}</h2>
+                <h3>{profileData.title}</h3>
+                <p className="bio">{profileData.bio}</p>
+                
+                {/* Portfolio Button */}
                 <motion.a
-                  key={index}
-                  href={link.url}
+                  href="https://ayomideabioye.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="social-link"
+                  className="portfolio-button"
+                  whileHover={{ 
+                    scale: 1.05,
+                    boxShadow: "0 0 25px rgba(77, 171, 247, 0.5)"
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  {link.icon}
+                  <span className="button-icon">🚀</span>
+                  View Full Portfolio
                 </motion.a>
-              ))}
-            </motion.div>
+              </motion.div>
 
-            <motion.div
-              className="contact-info"
-              variants={itemVariants}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-            >
-              <p>{profileData.email}</p>
-              <p>{profileData.phone}</p>
-              <p>{profileData.location}</p>
+              {/* Contact Section */}
+              <motion.div variants={itemVariants} className="contact-section">
+                <h3 className="section-title">Contact</h3>
+                <div className="contact-info">
+                  <div className="contact-item">
+                    <span className="icon">📧</span>
+                    <a href={`mailto:${profileData.email}`}>{profileData.email}</a>
+                  </div>
+                  <div className="contact-item">
+                    <span className="icon">📱</span>
+                    <a href={`tel:${profileData.phone}`}>{profileData.phone}</a>
+                  </div>
+                  <div className="contact-item">
+                    <span className="icon">📍</span>
+                    <span>{profileData.location}</span>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Social Links */}
+              <motion.div variants={itemVariants} className="social-links">
+                {profileData.socialLinks.map((link, index) => (
+                  <a
+                    key={index}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="social-link"
+                  >
+                    <span className="icon">{link.icon}</span>
+                    {link.name}
+                  </a>
+                ))}
+              </motion.div>
             </motion.div>
           </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        )}
+      </AnimatePresence>
+    </ErrorBoundary>
   );
 };
 

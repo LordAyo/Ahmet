@@ -7,34 +7,6 @@ import clickSound from '../../sounds/click.mp3';
 import backgroundMusic from '../../sounds/background.mp3';
 import ExpandedView from './ExpandedView';
 
-// Profile data
-const profileData = {
-  name: 'Ayomide Abioye',
-  title: 'UI/UX Designer | Front-End Developer',
-  image: profileImage,
-  bio: 'Passionate about creating beautiful, functional digital experiences. Specializing in user-centered design and modern web development.',
-  email: 'ayozzabioye@gmail.com',
-  phone: '647-825-7513',
-  location: 'Toronto, Canada',
-  socialLinks: [
-    {
-      name: 'GitHub',
-      url: 'https://github.com/lordayo',
-      icon: '👨‍💻'
-    },
-    {
-      name: 'LinkedIn',
-      url: 'https://linkedin.com/in/ayomide',
-      icon: '💼'
-    },
-    {
-      name: 'Twitter',
-      url: 'https://twitter.com/ayomide',
-      icon: '🐦'
-    }
-  ]
-};
-
 // Custom hook for animation timing
 const useAnimationConfig = () => {
   return {
@@ -150,6 +122,53 @@ const ProfileCard = () => {
     <Particle key={index} index={index} />
   ));
   
+  const profileData = {
+    name: "Ayomide Abioye",
+    title: "UI/UX Designer | Front-End Developer",
+    bio: "Passionate about creating beautiful, intuitive, and performant user interfaces. Experienced in React, TypeScript, and modern web technologies.",
+    image: profileImage,
+    email: "ayozzabioye@gmail.com",
+    phone: "647-825-7513",
+    location: "Toronto, Canada",
+    portfolio: [
+      {
+        title: "Interactive Profile Card",
+        description: "A modern profile card with laser animations and interactive elements built with React and Framer Motion.",
+        tags: ["React", "Framer Motion", "CSS Animations"],
+        link: "https://github.com/yourusername/profile-card"
+      },
+      {
+        title: "Portfolio Website",
+        description: "Personal portfolio website showcasing my projects and skills.",
+        tags: ["React", "Next.js", "Tailwind CSS"],
+        link: "https://ayomideabioye.com"
+      },
+      {
+        title: "Project 3",
+        description: "Description of your third project",
+        tags: ["TypeScript", "Node.js", "MongoDB"],
+        link: "https://github.com/yourusername/project3"
+      }
+    ],
+    socialLinks: [
+      {
+        name: "GitHub",
+        icon: "📦",
+        url: "https://github.com/yourusername"
+      },
+      {
+        name: "LinkedIn",
+        icon: "💼",
+        url: "https://linkedin.com/in/yourusername"
+      },
+      {
+        name: "Twitter",
+        icon: "🐦",
+        url: "https://twitter.com/yourusername"
+      }
+    ]
+  };
+  
   return (
     <motion.div 
       className="profile-card-container"
@@ -181,8 +200,8 @@ const ProfileCard = () => {
           transition={{ duration: 0.3 }}
         >
           <img 
-            src={profileImage} 
-            alt="Ayomide Abioye" 
+            src={profileData.image} 
+            alt={profileData.name} 
             className="profile-image" 
           />
           {isHovered && (
