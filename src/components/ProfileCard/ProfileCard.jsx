@@ -157,6 +157,10 @@ const ProfileCard = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
     >
+      {/* Full screen laser scans */}
+      <div className="laser-scan-1" />
+      <div className="laser-scan-2" />
+
       <motion.div
         className="profile-card"
         whileHover={{ scale: 1.02 }}
@@ -167,6 +171,10 @@ const ProfileCard = () => {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
+        {/* Laser beams */}
+        <div className="laser-beam top" />
+        <div className="laser-beam bottom" />
+
         <motion.div 
           className="profile-image-container"
           whileHover={{ scale: 1.05 }}
