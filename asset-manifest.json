@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/Ahmet/static/css/main.fa66acd7.css",
+    "main.js": "/Ahmet/static/js/main.58ae9569.js",
+    "static/media/IMG_8086.jpg": "/Ahmet/static/media/IMG_8086.4556acc9fef566d53b8f.jpg",
+    "static/media/hover.mp3": "/Ahmet/static/media/hover.bd1be3936fcd104f99fd.mp3",
+    "static/media/click.mp3": "/Ahmet/static/media/click.6875b2a3a222cc7a0598.mp3",
+    "index.html": "/Ahmet/index.html",
+    "main.fa66acd7.css.map": "/Ahmet/static/css/main.fa66acd7.css.map",
+    "main.58ae9569.js.map": "/Ahmet/static/js/main.58ae9569.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.fa66acd7.css",
+    "static/js/main.58ae9569.js"
+  ]
+}
