@@ -4,7 +4,6 @@ import './ProfileCard.css';
 import profileImage from '../../IMG_8086.jpg';
 import hoverSound from '../../sounds/hover.mp3';
 import clickSound from '../../sounds/click.mp3';
-import backgroundMusic from '../../sounds/background.mp3';
 import ExpandedView from './ExpandedView';
 
 // Custom hook for animation timing
@@ -13,6 +12,71 @@ const useAnimationConfig = () => {
     duration: 0.5,
     ease: [0.43, 0.13, 0.23, 0.96], // Custom easeInOut curve
   };
+};
+
+// Custom hook for sound effects
+const useSoundEffects = () => {
+  const [canPlaySound, setCanPlaySound] = useState(false);
+  
+  // Create audio instances
+  const hover = useMemo(() => typeof Audio !== 'undefined' ? new Audio(hoverSound) : null, []);
+  const click = useMemo(() => typeof Audio !== 'undefined' ? new Audio(clickSound) : null, []);
+  
+  // Initialize audio on first user interaction
+  useEffect(() => {
+    // Set volume levels
+    if (hover) hover.volume = 0.3;
+    if (click) click.volume = 0.5;
+    
+    // Function to enable audio
+    const enableAudio = () => {
+      setCanPlaySound(true);
+      document.removeEventListener('click', enableAudio);
+      document.removeEventListener('touchstart', enableAudio);
+      document.removeEventListener('keydown', enableAudio);
+    };
+    
+    // Add event listeners
+    document.addEventListener('click', enableAudio);
+    document.addEventListener('touchstart', enableAudio);
+    document.addEventListener('keydown', enableAudio);
+    
+    // Cleanup
+    return () => {
+      document.removeEventListener('click', enableAudio);
+      document.removeEventListener('touchstart', enableAudio);
+      document.removeEventListener('keydown', enableAudio);
+    };
+  }, [hover, click]);
+  
+  // Play sound functions
+  const playHoverSound = useCallback(() => {
+    if (canPlaySound && hover) {
+      hover.currentTime = 0;
+      const playPromise = hover.play();
+      
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.log('Error playing hover sound:', error);
+        });
+      }
+    }
+  }, [canPlaySound, hover]);
+  
+  const playClickSound = useCallback(() => {
+    if (canPlaySound && click) {
+      click.currentTime = 0;
+      const playPromise = click.play();
+      
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.log('Error playing click sound:', error);
+        });
+      }
+    }
+  }, [canPlaySound, click]);
+  
+  return { playHoverSound, playClickSound };
 };
 
 // Particle component for the animation effect
@@ -53,33 +117,16 @@ const ProfileCard = () => {
     height: typeof window !== 'undefined' ? window.innerHeight : 0,
   });
   const animationConfig = useAnimationConfig();
+  const { playHoverSound, playClickSound } = useSoundEffects();
   
-  // Audio refs
-  const hoverAudioRef = useRef(new Audio(hoverSound));
-  const clickAudioRef = useRef(new Audio(clickSound));
-  const backgroundAudioRef = useRef(new Audio(backgroundMusic));
+  // Handle hover sound
+  const handleHoverStart = useCallback(() => {
+    setIsHovered(true);
+    playHoverSound();
+  }, [playHoverSound]);
   
-  // Initialize background music
-  useEffect(() => {
-    backgroundAudioRef.current.volume = 0.2;
-    backgroundAudioRef.current.loop = true;
-    
-    // Start playing background music when component mounts
-    const playBackgroundMusic = async () => {
-      try {
-        await backgroundAudioRef.current.play();
-      } catch (error) {
-        console.log('Background music play failed:', error);
-      }
-    };
-    
-    playBackgroundMusic();
-    
-    // Cleanup function to stop music when component unmounts
-    return () => {
-      backgroundAudioRef.current.pause();
-      backgroundAudioRef.current.currentTime = 0;
-    };
+  const handleHoverEnd = useCallback(() => {
+    setIsHovered(false);
   }, []);
   
   // Handle window resize
@@ -95,22 +142,11 @@ const ProfileCard = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
   
-  // Handle hover sound
-  useEffect(() => {
-    if (isHovered) {
-      hoverAudioRef.current.currentTime = 0;
-      hoverAudioRef.current.volume = 0.3;
-      hoverAudioRef.current.play().catch(error => console.log('Audio play failed:', error));
-    }
-  }, [isHovered]);
-  
   // Memoized click handler
   const handleClick = useCallback(() => {
-    clickAudioRef.current.currentTime = 0;
-    clickAudioRef.current.volume = 0.5;
-    clickAudioRef.current.play().catch(error => console.log('Audio play failed:', error));
+    playClickSound();
     setIsExpanded(true);
-  }, []);
+  }, [playClickSound]);
   
   // Memoized close handler
   const handleClose = useCallback(() => {
@@ -170,22 +206,19 @@ const ProfileCard = () => {
   };
   
   return (
-    <motion.div 
-      className="profile-card-container"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
-    >
-      {/* Full screen laser scans */}
-      <div className="laser-scan-1" />
-      <div className="laser-scan-2" />
+    <div className="profile-card-container">
+      {/* Full screen laser beams that activate on hover */}
+      <div className="laser-beam beam-1"></div>
+      <div className="laser-beam beam-2"></div>
+      <div className="laser-beam beam-3"></div>
+      <div className="laser-beam beam-4"></div>
 
       <motion.div
         className="profile-card"
         whileHover={{ scale: 1.02 }}
         onClick={handleClick}
-        onHoverStart={() => setIsHovered(true)}
-        onHoverEnd={() => setIsHovered(false)}
+        onHoverStart={handleHoverStart}
+        onHoverEnd={handleHoverEnd}
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
@@ -264,7 +297,7 @@ const ProfileCard = () => {
         onClose={handleClose}
         profileData={profileData}
       />
-    </motion.div>
+    </div>
   );
 };
 

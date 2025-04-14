@@ -1,12 +1,9 @@
 import React, { useEffect, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useAnimations } from '../../hooks/useAnimations';
 import ErrorBoundary from '../ErrorBoundary/ErrorBoundary';
 import './ExpandedView.css';
 
 const ExpandedView = ({ isOpen, onClose, profileData }) => {
   const expandedRef = useRef(null);
-  const { containerVariants, itemVariants, overlayVariants } = useAnimations();
 
   // Handle click outside to close
   const handleClickOutside = useCallback((event) => {
@@ -16,117 +13,106 @@ const ExpandedView = ({ isOpen, onClose, profileData }) => {
   }, [onClose]);
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      // Prevent body scroll when modal is open
+      document.body.style.overflow = 'hidden';
+    }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      // Re-enable body scroll when modal is closed
+      document.body.style.overflow = 'auto';
     };
-  }, [handleClickOutside]);
+  }, [handleClickOutside, isOpen]);
+
+  if (!isOpen) return null;
 
   return (
     <ErrorBoundary>
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            className="expanded-overlay"
-            variants={overlayVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
+      <div className="expanded-overlay" onClick={onClose}>
+        <div
+          ref={expandedRef}
+          className="expanded-content"
+          onClick={e => e.stopPropagation()}
+        >
+          <button
+            className="close-button"
             onClick={onClose}
+            aria-label="Close"
           >
-            <motion.div
-              ref={expandedRef}
-              className="expanded-content"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              onClick={e => e.stopPropagation()}
-            >
-              <motion.button
-                className="close-button"
-                onClick={onClose}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                ×
-              </motion.button>
+            ×
+          </button>
 
-              {/* Profile Section */}
-              <motion.div variants={itemVariants} className="profile-section">
-                <motion.div 
-                  className="expanded-image-container"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <img 
-                    src={profileData.image} 
-                    alt={profileData.name}
-                    className="profile-image"
-                  />
-                </motion.div>
-                <h2>{profileData.name}</h2>
-                <h3>{profileData.title}</h3>
-                <p className="bio">{profileData.bio}</p>
+          {/* Profile Section */}
+          <div className="profile-section">
+            <div className="expanded-image-container">
+              <img 
+                src={profileData.image} 
+                alt={profileData.name}
+                loading="eager"
+              />
+            </div>
+            <h2>{profileData.name}</h2>
+            <h3>{profileData.title}</h3>
+            <p className="bio">{profileData.bio}</p>
+            
+            {/* Portfolio Button */}
+            <a
+              href="https://lordayo.github.io/ayomide-portfolio/"
+              className="portfolio-button"
+              onClick={(e) => {
+                e.preventDefault();
+                // Add a fade-out effect to the modal
+                const overlay = document.querySelector('.expanded-overlay');
+                overlay.classList.add('fade-out');
                 
-                {/* Portfolio Button */}
-                <motion.a
-                  href="https://ayomideabioye.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="portfolio-button"
-                  whileHover={{ 
-                    scale: 1.05,
-                    boxShadow: "0 0 25px rgba(77, 171, 247, 0.5)"
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <span className="button-icon">🚀</span>
-                  View Full Portfolio
-                </motion.a>
-              </motion.div>
+                // After the fade animation, navigate to the portfolio
+                setTimeout(() => {
+                  window.location.href = "https://lordayo.github.io/ayomide-portfolio/";
+                }, 300);
+              }}
+            >
+              <span className="button-icon">🚀</span>
+              View Full Portfolio
+            </a>
+          </div>
 
-              {/* Contact Section */}
-              <motion.div variants={itemVariants} className="contact-section">
-                <h3 className="section-title">Contact</h3>
-                <div className="contact-info">
-                  <div className="contact-item">
-                    <span className="icon">📧</span>
-                    <a href={`mailto:${profileData.email}`}>{profileData.email}</a>
-                  </div>
-                  <div className="contact-item">
-                    <span className="icon">📱</span>
-                    <a href={`tel:${profileData.phone}`}>{profileData.phone}</a>
-                  </div>
-                  <div className="contact-item">
-                    <span className="icon">📍</span>
-                    <span>{profileData.location}</span>
-                  </div>
-                </div>
-              </motion.div>
+          {/* Contact Section */}
+          <div className="contact-section">
+            <h3 className="section-title">Contact</h3>
+            <div className="contact-info">
+              <div className="contact-item">
+                <span className="icon">📧</span>
+                <a href={`mailto:${profileData.email}`}>{profileData.email}</a>
+              </div>
+              <div className="contact-item">
+                <span className="icon">📱</span>
+                <a href={`tel:${profileData.phone}`}>{profileData.phone}</a>
+              </div>
+              <div className="contact-item">
+                <span className="icon">📍</span>
+                <span>{profileData.location}</span>
+              </div>
+            </div>
+          </div>
 
-              {/* Social Links */}
-              <motion.div variants={itemVariants} className="social-links">
-                {profileData.socialLinks.map((link, index) => (
-                  <a
-                    key={index}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="social-link"
-                  >
-                    <span className="icon">{link.icon}</span>
-                    {link.name}
-                  </a>
-                ))}
-              </motion.div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          {/* Social Links */}
+          <div className="social-links">
+            {profileData.socialLinks.map((link, index) => (
+              <a
+                key={index}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="social-link"
+              >
+                <span className="icon">{link.icon}</span>
+                {link.name}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
     </ErrorBoundary>
   );
 };

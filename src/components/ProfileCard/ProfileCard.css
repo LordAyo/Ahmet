@@ -351,63 +351,61 @@ body {
   }
 }
 
-/* Full screen laser elements */
-.profile-card-container::before,
-.profile-card-container::after,
-.profile-card-container .laser-scan-1,
-.profile-card-container .laser-scan-2 {
-  content: "";
+/* Full screen laser beams */
+.laser-beam {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 2px;
-  background: linear-gradient(90deg, transparent, #4dabf7, transparent);
   opacity: 0;
   pointer-events: none;
   z-index: 0;
+  box-shadow: 0 0 10px currentColor, 0 0 20px currentColor,
+    0 0 30px currentColor;
+  transition: opacity 0.3s ease;
 }
 
-.profile-card-container::before {
-  animation: none;
+/* Set different colors for each beam */
+.laser-beam.beam-1 {
+  background: linear-gradient(90deg, transparent, #4dabf7, transparent);
+  color: #4dabf7;
 }
 
-.profile-card-container::after {
-  animation: none;
-}
-
-.profile-card-container .laser-scan-1 {
-  animation: none;
+.laser-beam.beam-2 {
   background: linear-gradient(90deg, transparent, #12b886, transparent);
+  color: #12b886;
 }
 
-.profile-card-container .laser-scan-2 {
-  animation: none;
+.laser-beam.beam-3 {
   background: linear-gradient(90deg, transparent, #ff6b6b, transparent);
+  color: #ff6b6b;
 }
 
-/* Activate lasers on card hover */
-.profile-card:hover ~ .laser-scan-1,
-.profile-card:hover ~ .laser-scan-2,
-.profile-card-container:hover::before,
-.profile-card-container:hover::after {
+.laser-beam.beam-4 {
+  background: linear-gradient(90deg, transparent, #fcc419, transparent);
+  color: #fcc419;
+}
+
+/* Hover activation */
+.profile-card:hover ~ .laser-beam.beam-1 {
   opacity: 1;
-}
-
-.profile-card:hover ~ .laser-scan-1 {
-  animation: laserScan3 3s infinite 1s;
-}
-
-.profile-card:hover ~ .laser-scan-2 {
-  animation: laserScan4 3s infinite 1.5s;
-}
-
-.profile-card:hover ~ .profile-card-container::before {
   animation: laserScan1 3s infinite;
 }
 
-.profile-card:hover ~ .profile-card-container::after {
-  animation: laserScan2 3s infinite 0.5s;
+.profile-card:hover ~ .laser-beam.beam-2 {
+  opacity: 1;
+  animation: laserScan2 3s infinite 0.75s;
+}
+
+.profile-card:hover ~ .laser-beam.beam-3 {
+  opacity: 1;
+  animation: laserScan3 3s infinite 1.5s;
+}
+
+.profile-card:hover ~ .laser-beam.beam-4 {
+  opacity: 1;
+  animation: laserScan4 3s infinite 2.25s;
 }
 
 /* Add glow effect to all lasers */
