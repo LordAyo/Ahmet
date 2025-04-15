@@ -207,6 +207,39 @@
   text-decoration: underline;
 }
 
+.portfolio-button {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background: linear-gradient(
+    45deg,
+    var(--gradient-start),
+    var(--gradient-end)
+  );
+  color: var(--bg-dark);
+  text-decoration: none;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin: 1rem auto;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 172, 255, 0.3);
+  text-align: center;
+  width: fit-content;
+}
+
+.portfolio-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 172, 255, 0.4);
+}
+
+.expanded-section.portfolio {
+  text-align: center;
+  border-bottom: none;
+  margin-top: 2rem;
+}
+
 /* Social icons */
 .social-link.github::before,
 .social-link.linkedin::before,

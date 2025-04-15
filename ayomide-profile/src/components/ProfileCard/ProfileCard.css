@@ -1,0 +1,266 @@
+/* Dark theme with high contrast for better visibility */
+:root {
+  --primary-color: #00acff;
+  --secondary-color: #62ffe7;
+  --bg-dark: #1a1a1a;
+  --bg-card: rgba(35, 35, 35, 0.95);
+  --text-light: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.9);
+  --shadow-color: rgba(0, 172, 255, 0.4);
+  --gradient-start: #00acff;
+  --gradient-end: #62ffe7;
+  --animation-timing: 0.3s;
+  --laser-glow: 0 0 20px var(--gradient-start), 0 0 40px var(--gradient-end);
+}
+
+/* Main container for the profile card */
+.profile-card {
+  position: relative;
+  width: 400px;
+  background: var(--bg-card);
+  border-radius: 25px;
+  padding: 2.5rem;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 172, 255, 0.2);
+  transition: all 0.3s ease;
+  z-index: 1;
+  border: 1px solid rgba(98, 255, 231, 0.2);
+}
+
+/* Laser animations */
+@keyframes laserScan1 {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+@keyframes laserScan2 {
+  0% {
+    transform: translateX(100%) rotate(-45deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-100%) rotate(-45deg);
+    opacity: 0;
+  }
+}
+
+@keyframes laserScan3 {
+  0% {
+    transform: translateX(-100%) rotate(-45deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%) rotate(-45deg);
+    opacity: 0;
+  }
+}
+
+@keyframes laserScan4 {
+  0% {
+    transform: translateX(100%) rotate(45deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-100%) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+/* Full screen laser effects */
+.profile-card::before,
+.profile-card::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--gradient-start),
+    var(--gradient-end)
+  );
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+
+.profile-card:hover::before {
+  opacity: 1;
+  animation: laserScan1 2s linear infinite;
+}
+
+.profile-card:hover::after {
+  opacity: 1;
+  animation: laserScan2 2s linear infinite;
+  animation-delay: 1s;
+}
+
+.laser-beam {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--gradient-start),
+    var(--gradient-end)
+  );
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+  box-shadow: var(--laser-glow);
+}
+
+.laser-beam.top {
+  top: 25%;
+}
+
+.laser-beam.bottom {
+  bottom: 25%;
+}
+
+.profile-card:hover .laser-beam.top {
+  opacity: 1;
+  animation: laserScan3 3s linear infinite;
+}
+
+.profile-card:hover .laser-beam.bottom {
+  opacity: 1;
+  animation: laserScan4 3s linear infinite;
+  animation-delay: 1.5s;
+}
+
+/* Profile content styling */
+.profile-image-container {
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 2rem;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(
+    45deg,
+    var(--gradient-start),
+    var(--gradient-end)
+  );
+  padding: 4px;
+  box-shadow: 0 10px 30px -5px rgba(0, 172, 255, 0.3);
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid var(--bg-card);
+}
+
+.profile-info {
+  text-align: center;
+  color: var(--text-light);
+}
+
+.profile-info h2 {
+  font-size: 2.2rem;
+  margin: 0 0 0.8rem;
+  background: linear-gradient(
+    90deg,
+    var(--gradient-start),
+    var(--gradient-end)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.profile-info h3 {
+  font-size: 1.4rem;
+  margin: 0 0 1.2rem;
+  color: var(--text-muted);
+}
+
+.location {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin-bottom: 1.2rem;
+}
+
+.hint {
+  font-size: 1rem;
+  color: var(--secondary-color);
+  opacity: 0.9;
+  margin-bottom: 1rem;
+}
+
+.portfolio-button {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  background: linear-gradient(
+    45deg,
+    var(--gradient-start),
+    var(--gradient-end)
+  );
+  color: var(--bg-dark);
+  text-decoration: none;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 172, 255, 0.3);
+}
+
+.portfolio-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 172, 255, 0.4);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .profile-card {
+    width: 350px;
+    padding: 2rem;
+  }
+
+  .profile-image-container {
+    width: 150px;
+    height: 150px;
+  }
+
+  .profile-info h2 {
+    font-size: 1.8rem;
+  }
+
+  .profile-info h3 {
+    font-size: 1.2rem;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .profile-card::before,
+  .profile-card::after,
+  .laser-beam {
+    animation: none;
+  }
+}

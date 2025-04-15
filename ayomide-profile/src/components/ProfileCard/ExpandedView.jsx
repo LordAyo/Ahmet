@@ -93,9 +93,13 @@ const ExpandedView = ({ profileData, onClose }) => {
         
         <motion.div className="expanded-image-container" variants={itemVariants}>
           <img 
-            src={`https://i.pravatar.cc/300?img=12`} 
+            src={profileData.image || "/assets/images/profile.jpg"} 
             alt={profileData.name} 
             className="expanded-image"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "/assets/images/profile.jpg";
+            }}
           />
         </motion.div>
         
@@ -152,6 +156,17 @@ const ExpandedView = ({ profileData, onClose }) => {
               <span>{profileData.location}</span>
             </motion.div>
           </div>
+        </motion.div>
+
+        <motion.div className="expanded-section portfolio" variants={itemVariants}>
+          <motion.a
+            href="https://lordayo.github.io/ayomide-portfolio/"
+            className="portfolio-button"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            View My Portfolio
+          </motion.a>
         </motion.div>
       </motion.div>
     </motion.div>
